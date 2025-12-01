@@ -296,6 +296,7 @@ export const schema = {
 | `foxen generate` | Generate optimized routes |
 | `foxen generate --watch` | Watch mode |
 | `foxen migrate <src> <dest>` | Migrate Next.js project |
+| `foxen start` | Start server |
 
 ---
 
@@ -347,77 +348,30 @@ bun run server.ts
 
 ---
 
-## FAQ
-
-<details>
-<summary><strong>Can I use this alongside Next.js?</strong></summary>
-
-Yes! You can run Foxen on a separate port for your API while keeping your Next.js frontend. This is a great way to incrementally migrate.
-</details>
-
-<details>
-<summary><strong>What about edge runtime?</strong></summary>
-
-Foxen runs on Bun, not edge. If you need edge, consider keeping those routes in Next.js.
-</details>
-
-<details>
-<summary><strong>Is params a Promise?</strong></summary>
-
-Yes! Following Next.js 15's async params pattern, route params are accessed via `await params` for better consistency.
-</details>
-
-<details>
-<summary><strong>Can I use database ORMs?</strong></summary>
-
-Absolutely! Prisma, Drizzle, and other ORMs work great with Bun. Just import and use them in your route handlers.
-</details>
-
----
-
-## Comparison
-
-| Feature | Next.js | Foxen |
-|---------|---------|-------|
-| File-based routing | Yes | Yes |
-| NextRequest/NextResponse | Yes | Yes |
-| Middleware | Yes | Yes |
-| cookies()/headers() | Yes | Yes |
-| Dynamic routes | Yes | Yes |
-| Catch-all routes | Yes | Yes |
-| next.config.ts features | Yes | Yes |
-| Runtime | Node.js | Bun |
-| Framework | Next.js | Elysia |
-| OpenAPI generation | No | Yes |
-| Eden Treaty types | No | Yes |
-| Performance | Baseline | ~10x faster |
-
----
-
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Your Application                      │
+│                    Your Application                     │
 ├─────────────────────────────────────────────────────────┤
-│  app/api/                                                │
+│  app/api/                                               │
 │  ├── users/route.ts      → GET, POST /api/users         │
 │  └── users/[id]/route.ts → GET, PUT  /api/users/:id     │
 ├─────────────────────────────────────────────────────────┤
-│                    @foxen/compiler                       │
+│                    @foxen/compiler                      │
 │       Analyzes → Generates optimized Elysia code        │
 ├─────────────────────────────────────────────────────────┤
-│                    @foxen/adapter                        │
+│                    @foxen/adapter                       │
 │       NextRequest/Response → Elysia context             │
 ├─────────────────────────────────────────────────────────┤
-│                     @foxen/core                          │
-│    1:1 Next.js compatible: NextRequest, NextResponse    │
+│                     @foxen/core                         │
+│  1:1-ish Next.js compatible: NextRequest, NextResponse  │
 ├─────────────────────────────────────────────────────────┤
-│                        Elysia                            │
+│                        Elysia                           │
 │         Type-safe, high-performance framework           │
 ├─────────────────────────────────────────────────────────┤
-│                          Bun                             │
-│                Fast JavaScript runtime                   │
+│                          Bun                            │
+│                Fast JavaScript runtime                  │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -425,11 +379,11 @@ Absolutely! Prisma, Drizzle, and other ORMs work great with Bun. Just import and
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or PR.
+Contributions are welcome! Please open an issue or PR. (im begging you)
 
 ```bash
 # Clone and install
-git clone https://github.com/your-username/foxen.git
+git clone https://github.com/xwxfox/foxen.git
 cd foxen
 bun install
 
