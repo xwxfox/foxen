@@ -1,0 +1,82 @@
+{
+	"name": "@foxen/compiler",
+	"version": "1.0.0",
+	"description": "Code generation for Foxen - generates optimized Elysia routes from Next.js App Router structure",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./analyzer": {
+			"import": "./dist/analyzer.js",
+			"types": "./dist/analyzer.d.ts"
+		},
+		"./schema": {
+			"import": "./dist/schema.js",
+			"types": "./dist/schema.d.ts"
+		},
+		"./types-gen": {
+			"import": "./dist/types-gen.js",
+			"types": "./dist/types-gen.d.ts"
+		},
+		"./config-gen": {
+			"import": "./dist/config-gen.js",
+			"types": "./dist/config-gen.d.ts"
+		},
+		"./middleware-gen": {
+			"import": "./dist/middleware-gen.js",
+			"types": "./dist/middleware-gen.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/compiler"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/analyzer.ts ./src/schema.ts ./src/types-gen.ts ./src/config-gen.ts ./src/middleware-gen.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test || echo 'No tests found'",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/adapter": "workspace:*",
+		"@foxen/config": "workspace:*",
+		"@foxen/core": "workspace:*",
+		"@foxen/middleware": "workspace:*",
+		"chokidar": "^4.0.0",
+		"fast-glob": "^3.3.0",
+		"ts-morph": "^24.0.0"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"elysia": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"elysia": ">=1.0.0",
+		"typescript": "^5.0.0"
+	},
+	"keywords": [
+		"nextjs",
+		"elysia",
+		"bun",
+		"codegen",
+		"compiler",
+		"ts-morph"
+	],
+	"license": "MIT"
+}

@@ -1,0 +1,63 @@
+{
+	"name": "@foxen/cli",
+	"version": "1.0.0",
+	"description": "CLI for Foxen - generate, build, and develop Elysia routes",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"bin": {
+		"foxen": "./dist/bin.js"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./bin": {
+			"import": "./dist/bin.js"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/cli"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/bin.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test || echo 'No tests found'",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/compiler": "workspace:*",
+		"@foxen/adapter": "workspace:*",
+		"@foxen/core": "workspace:*",
+		"@foxen/env": "workspace:*",
+		"cac": "^6.7.14",
+		"elysia": "^1.2.0",
+		"picocolors": "^1.1.0",
+		"ts-morph": "^25.0.0"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"keywords": [
+		"nextjs",
+		"elysia",
+		"bun",
+		"cli",
+		"codegen"
+	],
+	"license": "MIT"
+}

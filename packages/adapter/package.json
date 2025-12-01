@@ -1,0 +1,70 @@
+{
+	"name": "@foxen/adapter",
+	"version": "1.0.0",
+	"description": "Elysia integration for Foxen - route scanning, handler adaptation, middleware",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./scanner": {
+			"import": "./dist/scanner.js",
+			"types": "./dist/scanner.d.ts"
+		},
+		"./context": {
+			"import": "./dist/context.js",
+			"types": "./dist/context.d.ts"
+		},
+		"./lifecycle": {
+			"import": "./dist/lifecycle.js",
+			"types": "./dist/lifecycle.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/adapter"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/scanner.ts ./src/context.ts ./src/lifecycle.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/core": "workspace:*",
+		"@foxen/config": "workspace:*",
+		"@foxen/middleware": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"elysia": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"elysia": ">=1.0.0",
+		"typescript": "^5.0.0"
+	},
+	"keywords": [
+		"nextjs",
+		"elysia",
+		"bun",
+		"adapter",
+		"app-router",
+		"routing"
+	],
+	"license": "MIT"
+}

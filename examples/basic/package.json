@@ -1,0 +1,23 @@
+{
+  "name": "basic-example",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Basic example of using Foxen",
+  "type": "module",
+  "scripts": {
+    "generate": "foxen generate",
+    "dev": "foxen dev",
+    "start": "bun run server.ts"
+  },
+  "dependencies": {
+    "@foxen/cli": "workspace:*",
+    "@foxen/core": "workspace:*",
+    "@foxen/adapter": "workspace:*",
+    "@foxen/helpers": "workspace:*",
+    "elysia": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.7.0"
+  }
+}

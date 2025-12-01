@@ -1,0 +1,37 @@
+{
+	"name": "foxen-monorepo",
+	"private": true,
+	"version": "0.1.0",
+	"description": "Foxen - Next.js API Routes → Elysia Migration Framework",
+	"author": "xwxfox",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen"
+	},
+	"workspaces": ["packages/*", "examples/*"],
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"test": "turbo test",
+		"typecheck": "turbo typecheck",
+		"lint": "turbo lint",
+		"clean": "turbo clean && rm -rf node_modules",
+		"format": "biome format --write .",
+		"check": "biome check --write .",
+		"changeset": "changeset",
+		"version": "changeset version",
+		"release": "bun run build && changeset publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@changesets/cli": "^2.29.8",
+		"@types/bun": "^1.2.0",
+		"turbo": "^2.3.0",
+		"typescript": "^5.7.0"
+	},
+	"packageManager": "bun@1.1.38",
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

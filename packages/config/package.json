@@ -1,0 +1,51 @@
+{
+	"name": "@foxen/config",
+	"version": "1.0.0",
+	"description": "Configuration loading and parsing for Foxen - next.config.ts support, redirects, rewrites, headers",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/config"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"keywords": [
+		"foxen",
+		"nextjs",
+		"elysia",
+		"config",
+		"redirects",
+		"rewrites"
+	],
+	"license": "MIT"
+}

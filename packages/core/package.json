@@ -1,0 +1,67 @@
+{
+	"name": "@foxen/core",
+	"version": "1.0.0",
+	"description": "Core runtime for Next.js App Router compatibility - NextRequest, NextResponse, cookies, headers",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./request": {
+			"import": "./dist/request.js",
+			"types": "./dist/request.d.ts"
+		},
+		"./response": {
+			"import": "./dist/response.js",
+			"types": "./dist/response.d.ts"
+		},
+		"./cookies": {
+			"import": "./dist/cookies.js",
+			"types": "./dist/cookies.d.ts"
+		},
+		"./url": {
+			"import": "./dist/url.js",
+			"types": "./dist/url.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/core"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/request.ts ./src/response.ts ./src/cookies.ts ./src/url.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"keywords": [
+		"nextjs",
+		"elysia",
+		"bun",
+		"next-request",
+		"next-response",
+		"app-router"
+	],
+	"license": "MIT"
+}

@@ -1,0 +1,62 @@
+{
+	"name": "@foxen/helpers",
+	"version": "1.0.0",
+	"description": "Helper utilities for Foxen - userAgent, matchers, and more",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./user-agent": {
+			"import": "./dist/user-agent.js",
+			"types": "./dist/user-agent.d.ts"
+		},
+		"./matchers": {
+			"import": "./dist/matchers.js",
+			"types": "./dist/matchers.d.ts"
+		},
+		"./headers": {
+			"import": "./dist/headers.js",
+			"types": "./dist/headers.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/helpers"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/user-agent.ts ./src/matchers.ts ./src/headers.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"keywords": [
+		"nextjs",
+		"elysia",
+		"helpers",
+		"user-agent",
+		"middleware"
+	],
+	"license": "MIT"
+}

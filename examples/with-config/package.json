@@ -1,0 +1,19 @@
+{
+  "name": "foxen-example-with-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run server.ts",
+    "dev": "bun --watch run server.ts"
+  },
+  "dependencies": {
+    "@foxen/adapter": "workspace:*",
+    "@foxen/core": "workspace:*",
+    "elysia": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.7.0"
+  }
+}

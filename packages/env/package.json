@@ -1,0 +1,73 @@
+{
+	"name": "@foxen/env",
+	"version": "1.0.0",
+	"description": "Environment variable management for Foxen - loading, validation, type-safe schemas, and runtime access",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./parser": {
+			"import": "./dist/parser.js",
+			"types": "./dist/parser.d.ts"
+		},
+		"./loader": {
+			"import": "./dist/loader.js",
+			"types": "./dist/loader.d.ts"
+		},
+		"./generator": {
+			"import": "./dist/generator.js",
+			"types": "./dist/generator.d.ts"
+		},
+		"./runtime": {
+			"import": "./dist/runtime.js",
+			"types": "./dist/runtime.d.ts"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/env"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/parser.ts ./src/loader.ts ./src/generator.ts ./src/runtime.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/core": "workspace:*",
+		"@sinclair/typebox": "^0.34.0",
+		"ts-morph": "^24.0.0"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"keywords": [
+		"foxen",
+		"env",
+		"environment",
+		"dotenv",
+		"typebox",
+		"validation",
+		"schema"
+	],
+	"license": "MIT"
+}

@@ -1,0 +1,66 @@
+{
+	"name": "foxen",
+	"version": "1.0.0",
+	"description": "Foxen - Next.js API Routes → Elysia Migration Framework",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"bin": {
+		"foxen": "./dist/bin.js"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "bun build ./src/index.ts ./src/bin.ts --outdir ./dist --target bun && bun run build:types",
+		"build:types": "tsc --project tsconfig.build.json",
+		"dev": "bun run build --watch",
+		"test": "bun test || echo 'No tests found'",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist .turbo"
+	},
+	"dependencies": {
+		"@foxen/core": "workspace:*",
+		"@foxen/helpers": "workspace:*",
+		"@foxen/adapter": "workspace:*",
+		"@foxen/compiler": "workspace:*",
+		"@foxen/cli": "workspace:*",
+		"@foxen/config": "workspace:*",
+		"@foxen/middleware": "workspace:*",
+		"@foxen/env": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0",
+		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"elysia": ">=1.0.0"
+	},
+	"keywords": [
+		"foxen",
+		"nextjs",
+		"elysia",
+		"bun",
+		"api",
+		"routes",
+		"migration",
+		"app-router"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/foxen"
+	}
+}
