@@ -1,7 +1,7 @@
 {
-	"name": "@foxen/config",
+	"name": "@foxen/navigation",
 	"version": "1.4.0",
-	"description": "Configuration loading and parsing for Foxen - next.config.ts support, redirects, rewrites, headers",
+	"description": "Next.js navigation helpers for Foxen (headers, cookies, redirects, draft mode)",
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -14,11 +14,6 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/xwxfox/foxen",
-		"directory": "packages/config"
 	},
 	"files": [
 		"dist",
@@ -36,16 +31,21 @@
 		"@foxen/core": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.2.0",
+		"@types/bun": "^1.3.4",
 		"typescript": "^5.7.0"
 	},
 	"keywords": [
 		"foxen",
+		"navigation",
 		"nextjs",
-		"elysia",
-		"config",
-		"redirects",
-		"rewrites"
+		"headers",
+		"cookies",
+		"redirect"
 	],
-	"license": "MIT"
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/xwxfox/foxen",
+		"directory": "packages/navigation"
+	}
 }

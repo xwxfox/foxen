@@ -24,6 +24,24 @@ describe('@foxen/foxen exports', () => {
 		});
 	});
 
+	describe('navigation exports', () => {
+		test('exports headers helper', () => {
+			expect(typeof foxen.headers).toBe('function');
+		});
+
+		test('exports cookies helper', () => {
+			expect(typeof foxen.cookies).toBe('function');
+		});
+
+		test('exports redirect helper', () => {
+			expect(typeof foxen.redirect).toBe('function');
+		});
+
+		test('exports foxenInterruptHandler', () => {
+			expect(typeof foxen.foxenInterruptHandler).toBe('function');
+		});
+	});
+
 	describe('helpers exports', () => {
 		test('exports userAgent', () => {
 			expect(foxen.userAgent).toBeDefined();

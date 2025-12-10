@@ -59,3 +59,10 @@ export {
 	applyMiddlewareHeaders,
 	createRewrittenRequest,
 } from './executor.js';
+
+// =============================================================================
+// Interrupt Middleware
+// =============================================================================
+
+export { foxenInterruptHandler } from './interrupts.js';
+export type { FoxenInterruptResponseOptions } from '@foxen/navigation';

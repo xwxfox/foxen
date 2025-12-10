@@ -65,6 +65,22 @@ describe('transformAllRoutes', () => {
 		expect(content).not.toContain('from "next/server"');
 	});
 
+	test('maps navigation helpers to @foxen/navigation', async () => {
+		const analysis = await analyzeNextJsProject(NEXTJS_APP);
+		const results = await transformAllRoutes(analysis, OUTPUT_DIR);
+
+		const sessionRoute = results.find((r) => r.elysiaPath === '/session');
+		expect(sessionRoute).toBeDefined();
+		expect(sessionRoute?.outputPath).toBeDefined();
+
+		const content = readFileSync(sessionRoute?.outputPath as string, 'utf-8');
+		expect(content).toContain('@foxen/navigation');
+		expect(content).toContain('headers');
+		expect(content).toContain('redirect');
+		expect(content).not.toContain('next/navigation');
+		expect(content).not.toContain('next/headers');
+	});
+
 	test('preserves HTTP methods', async () => {
 		const analysis = await analyzeNextJsProject(NEXTJS_APP);
 		const results = await transformAllRoutes(analysis, OUTPUT_DIR);

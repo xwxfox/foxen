@@ -1,5 +1,19 @@
 # @foxen/cli
 
+## 1.4.0
+
+### Minor Changes
+
+- Added @foxen/navigation - adding support for nextjs-ish cookies() headers() rewrite() auth interupts etc
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/compiler@1.4.0
+  - @foxen/adapter@1.4.0
+  - @foxen/core@1.4.0
+  - @foxen/env@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes

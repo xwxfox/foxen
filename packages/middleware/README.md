@@ -169,6 +169,30 @@ export const config = {
 | `parseMiddlewareResponse(response)` | Parse middleware response type |
 | `applyMiddlewareHeaders(response, headers)` | Apply headers from middleware |
 
+### Interrupt Handling
+
+Foxen routes can throw interrupts from `@foxen/navigation` (for example, `redirect()` or `notFound()`).
+Use the `foxnInterruptHandler` plugin to translate those interrupts into HTTP responses when building
+your own Elysia apps.
+
+```typescript
+import { Elysia } from "elysia";
+import { foxnInterruptHandler } from "@foxen/middleware";
+import { redirect } from "@foxen/navigation";
+
+const app = new Elysia()
+    .use(foxnInterruptHandler({
+        onUnauthorized: () => new Response("nope", { status: 401 }),
+    }))
+    .get("/api/secure", () => {
+        redirect("/login");
+    });
+```
+
+The handler accepts `FoxnInterruptResponseOptions`, allowing custom overrides for redirect/not-found/
+unauthorized/forbidden interrupts and default headers that should be applied to every generated
+response.
+
 ### Event
 
 | Function | Description |

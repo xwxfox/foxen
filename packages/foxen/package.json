@@ -1,6 +1,6 @@
 {
 	"name": "foxn",
-	"version": "1.4.1",
+	"version": "1.5.0",
 	"description": "Foxen - Next.js API Routes → Elysia Migration Framework",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -38,7 +38,8 @@
 		"@foxen/cli": "workspace:*",
 		"@foxen/config": "workspace:*",
 		"@foxen/middleware": "workspace:*",
-		"@foxen/env": "workspace:*"
+		"@foxen/env": "workspace:*",
+		"@foxen/navigation": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.2.0",

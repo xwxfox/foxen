@@ -149,7 +149,7 @@ cli.help((sections) => {
 
 	sections.push({
 		title: pc.bold('\nDocumentation'),
-		body: `  ${pc.cyan('https://github.com/foxen/foxen')}`,
+		body: `  ${pc.cyan('https://github.com/xwxfox/foxen')}`,
 	});
 
 	return sections;

@@ -1,5 +1,12 @@
 import type { HttpMethod, NextRequest, NextRouteHandler } from '@foxen/core';
 import {
+	applyFoxenResponseContext,
+	createFoxenRequestContext,
+	createInterruptResponse,
+	isInterruptError,
+	withFoxenRequestContext,
+} from '@foxen/navigation';
+import {
 	createNextRequest as createNextRequestFromContext,
 	createParamsPromise,
 	getFoxenContext,
@@ -108,31 +115,10 @@ export const defaultAdapter: HandlerAdapter = (
 		const request = createNextRequest(ctx);
 		const params = createNextParams(ctx.params, routeInfo.params);
 
-		try {
-			const response = await handler(request, { params });
-
-			// Handle different response types
-			if (response instanceof Response) {
-				return response;
-			}
-
-			// If handler returned a plain object, convert to JSON
-			if (response !== null && response !== undefined) {
-				return new Response(JSON.stringify(response), {
-					status: 200,
-					headers: { 'Content-Type': 'application/json' },
-				});
-			}
-
-			// No content
-			return new Response(null, { status: 204 });
-		} catch (error) {
-			console.error(`[foxen] Error in route ${routeInfo.elysiaPath}:`, error);
-			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
+		return handleFoxenRequest(request, routeInfo, async () => {
+			const result = await handler(request, { params });
+			return normalizeResponse(result);
+		});
 	};
 };
 
@@ -141,33 +127,15 @@ export const defaultAdapter: HandlerAdapter = (
  */
 export const simpleAdapter: HandlerAdapter = (
 	handler: NextRouteHandler,
-	_routeInfo: RouteInfo,
+	routeInfo: RouteInfo,
 	_method: HttpMethod,
 ): ElysiaHandler => {
 	return async (ctx: ElysiaContext): Promise<Response> => {
-		try {
-			const request = createNextRequest(ctx);
-			const response = await handler(request);
-
-			if (response instanceof Response) {
-				return response;
-			}
-
-			if (response !== null && response !== undefined) {
-				return new Response(JSON.stringify(response), {
-					status: 200,
-					headers: { 'Content-Type': 'application/json' },
-				});
-			}
-
-			return new Response(null, { status: 204 });
-		} catch (error) {
-			console.error('[foxen] Error in handler:', error);
-			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
+		const request = createNextRequest(ctx);
+		return handleFoxenRequest(request, routeInfo, async () => {
+			const result = await handler(request);
+			return normalizeResponse(result);
+		});
 	};
 };
 
@@ -184,45 +152,65 @@ export function createMiddlewareAdapter(
 ): HandlerAdapter {
 	return (handler: NextRouteHandler, routeInfo: RouteInfo, _method: HttpMethod): ElysiaHandler => {
 		return async (ctx: ElysiaContext): Promise<Response> => {
-			// Run before middleware
-			if (beforeHandler) {
-				const result = await beforeHandler(ctx, routeInfo);
-				if (result instanceof Response) {
-					return result;
-				}
-			}
-
 			const request = createNextRequest(ctx);
 			const params = createNextParams(ctx.params, routeInfo.params);
 
-			try {
-				let response = await handler(request, { params });
-
-				// Ensure we have a Response
-				if (!(response instanceof Response)) {
-					if (response !== null && response !== undefined) {
-						response = new Response(JSON.stringify(response), {
-							status: 200,
-							headers: { 'Content-Type': 'application/json' },
-						});
-					} else {
-						response = new Response(null, { status: 204 });
+			return handleFoxenRequest(request, routeInfo, async () => {
+				if (beforeHandler) {
+					const result = await beforeHandler(ctx, routeInfo);
+					if (result instanceof Response) {
+						return result;
 					}
 				}
 
-				// Run after middleware
+				let response = await handler(request, { params });
+				response = normalizeResponse(response);
+
 				if (afterHandler) {
 					response = await afterHandler(response, ctx, routeInfo);
 				}
 
 				return response;
-			} catch (error) {
-				console.error(`[foxen] Error in route ${routeInfo.elysiaPath}:`, error);
-				return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-					status: 500,
-					headers: { 'Content-Type': 'application/json' },
-				});
-			}
+			});
 		};
 	};
+}
+
+function normalizeResponse(payload: unknown): Response {
+	if (payload instanceof Response) {
+		return payload;
+	}
+
+	if (payload !== null && payload !== undefined) {
+		return new Response(JSON.stringify(payload), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+
+	return new Response(null, { status: 204 });
+}
+
+async function handleFoxenRequest(
+	request: NextRequest,
+	routeInfo: RouteInfo,
+	exec: () => Promise<Response>,
+): Promise<Response> {
+	const foxnContext = createFoxenRequestContext({ request });
+	try {
+		const response = await withFoxenRequestContext(foxnContext, exec);
+		return applyFoxenResponseContext(response, foxnContext);
+	} catch (error) {
+		if (isInterruptError(error)) {
+			const interruptResponse = createInterruptResponse(error);
+			return applyFoxenResponseContext(interruptResponse, foxnContext);
+		}
+
+		console.error(`[foxen] Error in route ${routeInfo.elysiaPath}:`, error);
+		const fallback = new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' },
+		});
+		return applyFoxenResponseContext(fallback, foxnContext);
+	}
 }

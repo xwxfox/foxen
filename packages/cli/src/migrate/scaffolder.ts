@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
 	IndentationText,
@@ -9,6 +10,24 @@ import {
 	VariableDeclarationKind,
 } from 'ts-morph';
 import type { MigrationResult, NextJsProjectAnalysis, ScaffoldOptions } from './types.js';
+
+const jsonRequire = createRequire(import.meta.url);
+const FALLBACK_FOXEN_VERSION = '^1.4.0';
+
+function resolveFoxenVersion(): string {
+	try {
+		const pkg = jsonRequire('foxn/package.json') as { version?: string };
+		if (pkg?.version) {
+			return `^${pkg.version}`;
+		}
+	} catch {
+		// Ignore – fallback covers cases where foxn isn't locally resolvable
+	}
+
+	return FALLBACK_FOXEN_VERSION;
+}
+
+const FOXEN_VERSION = resolveFoxenVersion();
 
 /**
  * Default scaffold options
@@ -112,6 +131,7 @@ async function writePackageJson(
 			test: isBun ? 'bun test' : 'vitest',
 		},
 		dependencies: {
+			foxn: FOXEN_VERSION,
 			elysia: '^1.3.0',
 			'@elysiajs/cors': '^1.3.0',
 			'@elysiajs/swagger': '^1.3.0',
@@ -339,7 +359,7 @@ async function writeReadme(outputDir: string, analysis: NextJsProjectAnalysis): 
 	const lines = [
 		`# ${name} (Elysia)`,
 		'',
-		'This project was migrated from Next.js API Routes to Elysia using [Foxen](https://github.com/your-org/foxen).',
+		'This project was migrated from Next.js API Routes to Elysia using [Foxen](https://github.com/xwxfox/foxen).',
 		'',
 		'## Getting Started',
 		'',

@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/middleware",
-	"version": "1.3.1",
+	"version": "1.4.0",
 	"description": "Middleware support for Foxen - middleware.ts and proxy.ts handling",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -34,11 +34,16 @@
 	},
 	"dependencies": {
 		"@foxen/core": "workspace:*",
-		"@foxen/config": "workspace:*"
+		"@foxen/config": "workspace:*",
+		"@foxen/navigation": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/bun": "^1.2.0",
+		"elysia": "^1.0.0",
 		"typescript": "^5.7.0"
+	},
+	"peerDependencies": {
+		"elysia": ">=1.0.0"
 	},
 	"keywords": [
 		"foxen",

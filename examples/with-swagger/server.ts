@@ -21,7 +21,7 @@ const app = new Elysia()
                         "Example API demonstrating Foxen with Swagger/OpenAPI documentation",
                     contact: {
                         name: "Foxen",
-                        url: "https://github.com/foxen/foxen",
+                        url: "https://github.com/xwxfox/foxen",
                     },
                 },
                 tags: [

@@ -20,6 +20,8 @@ export interface TypeGenOptions {
 	serverUrl?: string;
 	/** Whether to export individual route types */
 	exportIndividualTypes?: boolean;
+	/** Relative path used when importing the generated routes module */
+	routesImportPath?: string;
 }
 
 /**
@@ -56,16 +58,17 @@ function routeToTypeName(route: AnalyzedRoute): string {
 		.split('/')
 		.filter(Boolean)
 		.map((segment) => {
+			let normalized = segment;
 			// Remove : prefix for params
-			if (segment.startsWith(':')) {
-				segment = segment.slice(1);
+			if (normalized.startsWith(':')) {
+				normalized = normalized.slice(1);
 			}
 			// Remove * prefix for catch-all
-			if (segment.startsWith('*')) {
-				segment = segment.slice(1) || 'CatchAll';
+			if (normalized.startsWith('*')) {
+				normalized = normalized.slice(1) || 'CatchAll';
 			}
 			// Capitalize first letter
-			return segment.charAt(0).toUpperCase() + segment.slice(1);
+			return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 		})
 		.join('');
 
@@ -131,18 +134,19 @@ export function generateTypeExports(
 	// Add header
 	const header = options.header ?? DEFAULT_HEADER;
 	typesFile.insertStatements(0, header);
+	const routesImportPath = options.routesImportPath ?? './routes';
 
 	// Import Elysia type
 	typesFile.addImportDeclaration({
 		moduleSpecifier: 'elysia',
-		namedImports: [{ name: 'Elysia', isTypeOnly: true }],
+		namedImports: ['Elysia'],
 		isTypeOnly: true,
 	});
 
 	// Import routes type
 	typesFile.addImportDeclaration({
-		moduleSpecifier: './routes',
-		namedImports: [{ name: 'routes', isTypeOnly: true }],
+		moduleSpecifier: routesImportPath,
+		namedImports: ['routes'],
 		isTypeOnly: true,
 	});
 

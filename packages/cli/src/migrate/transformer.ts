@@ -1,17 +1,41 @@
 import { existsSync } from 'node:fs';
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
-import type { AnalyzedRoute } from '@foxen/compiler';
+import { generateTypeExports } from '@foxen/compiler';
+import type { AnalysisResult, AnalyzedRoute } from '@foxen/compiler';
 import {
 	type FunctionDeclaration,
 	IndentationText,
 	NewLineKind,
 	Project,
 	QuoteKind,
+	SyntaxKind,
 	type SourceFile,
 	VariableDeclarationKind,
 } from 'ts-morph';
 import type { NextJsProjectAnalysis, TransformedRoute } from './types.js';
+
+const FOXN_INTEROP_EXPORTS = new Set([
+	'NextRequest',
+	'NextResponse',
+	'NextURL',
+	'NextFetchEvent',
+	'RequestCookies',
+	'ResponseCookies',
+	'NextRequestInit',
+]);
+
+const NAVIGATION_HELPERS = new Set([
+	'headers',
+	'cookies',
+	'draftMode',
+	'redirect',
+	'permanentRedirect',
+	'temporaryRedirect',
+	'notFound',
+	'unauthorized',
+	'forbidden',
+]);
 
 /**
  * HTTP methods supported by Next.js App Router
@@ -50,6 +74,9 @@ export async function transformAllRoutes(
 
 	// Generate routes index file
 	await generateRoutesIndex(transformedRoutes, routesOutputDir);
+
+	// Generate shared API types once routes are ready
+	await generateRouteTypes(analysis, transformedRoutes, outputDir);
 
 	return transformedRoutes;
 }
@@ -104,8 +131,33 @@ async function transformRouteFile(
 		namedImports: ['Elysia', 't'],
 	});
 
+	const { foxn: foxnImports, navigation: navigationImports } = collectInteropImports(route);
+	if (foxnImports.length > 0) {
+		outputFile.addImportDeclaration({
+			moduleSpecifier: 'foxn',
+			namedImports: foxnImports.map((spec) =>
+				spec.alias ? { name: spec.name, alias: spec.alias } : spec.name,
+			),
+		});
+	}
+
+	if (navigationImports.length > 0) {
+		outputFile.addImportDeclaration({
+			moduleSpecifier: '@foxen/navigation',
+			namedImports: navigationImports.map((spec) =>
+				spec.alias ? { name: spec.name, alias: spec.alias } : spec.name,
+			),
+		});
+	}
+
 	// Copy over non-Next.js specific imports
 	transformImports(sourceFile, outputFile);
+
+	const localTypeBlock = collectTypeDeclarations(sourceFile);
+	if (localTypeBlock) {
+		outputFile.addStatements('\n');
+		outputFile.addStatements(localTypeBlock);
+	}
 
 	outputFile.addStatements('\n');
 
@@ -355,6 +407,27 @@ function createRouteName(routePath: string): string {
 		.replace(/^(\d)/, '_$1')}Route`;
 }
 
+function collectTypeDeclarations(sourceFile: SourceFile): string | undefined {
+	const declarations = sourceFile
+		.getStatements()
+		.filter((statement) => {
+			const kind = statement.getKind();
+			return (
+				kind === SyntaxKind.TypeAliasDeclaration ||
+				kind === SyntaxKind.InterfaceDeclaration ||
+				kind === SyntaxKind.EnumDeclaration
+			);
+		})
+		.map((statement) => statement.getText().trim())
+		.filter(Boolean);
+
+	if (declarations.length === 0) {
+		return undefined;
+	}
+
+	return declarations.join('\n\n');
+}
+
 /**
  * Generate index file that exports all routes
  */
@@ -411,4 +484,88 @@ async function generateRoutesIndex(routes: TransformedRoute[], routesDir: string
 	});
 
 	await indexFile.save();
+}
+
+function collectInteropImports(route: AnalyzedRoute): {
+	foxn: Array<{ name: string; alias?: string }>;
+	navigation: Array<{ name: string; alias?: string }>;
+} {
+	const foxnImports = new Map<string, { name: string; alias?: string }>();
+	const navigationImports = new Map<string, { name: string; alias?: string }>();
+
+	for (const imp of route.imports) {
+		if (!imp.moduleSpecifier.startsWith('next')) {
+			continue;
+		}
+
+		const isNavigationModule =
+			imp.moduleSpecifier === 'next/navigation' || imp.moduleSpecifier === 'next/headers';
+
+		for (const named of imp.namedImports) {
+			const alias = named.alias ? named.alias.replace(/^as\s+/i, '').trim() : undefined;
+
+			if (isNavigationModule && NAVIGATION_HELPERS.has(named.name)) {
+				navigationImports.set(named.name, { name: named.name, alias });
+				continue;
+			}
+
+			if (!FOXN_INTEROP_EXPORTS.has(named.name)) {
+				continue;
+			}
+
+			foxnImports.set(named.name, { name: named.name, alias });
+		}
+	}
+
+	if (route.usesNextRequest && !foxnImports.has('NextRequest')) {
+		foxnImports.set('NextRequest', { name: 'NextRequest' });
+	}
+
+	if (route.usesNextResponse && !foxnImports.has('NextResponse')) {
+		foxnImports.set('NextResponse', { name: 'NextResponse' });
+	}
+
+	return {
+		foxn: Array.from(foxnImports.values()),
+		navigation: Array.from(navigationImports.values()),
+	};
+}
+
+async function generateRouteTypes(
+	analysis: NextJsProjectAnalysis,
+	transformedRoutes: TransformedRoute[],
+	outputDir: string,
+): Promise<void> {
+	const successfulPaths = new Set(
+		transformedRoutes.filter((route) => route.success).map((route) => route.elysiaPath),
+	);
+
+	if (successfulPaths.size === 0) {
+		return;
+	}
+
+	const routesForTypes = analysis.routes.filter((route) => successfulPaths.has(route.elysiaPath));
+
+	if (routesForTypes.length === 0) {
+		return;
+	}
+
+	const analysisForTypes: AnalysisResult = {
+		rootDir: analysis.root,
+		routes: routesForTypes,
+		middleware: [],
+		errors: [],
+		timestamp: new Date(),
+	};
+
+	const { typesContent } = generateTypeExports(analysisForTypes, {
+		routesImportPath: '../routes/index',
+	});
+
+	const typesDir = join(outputDir, 'src/types');
+	if (!existsSync(typesDir)) {
+		await mkdir(typesDir, { recursive: true });
+	}
+
+	await writeFile(join(typesDir, 'app.ts'), `${typesContent.trimEnd()}\n`);
 }

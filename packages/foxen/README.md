@@ -58,6 +58,34 @@ import {
 } from "foxn";
 ```
 
+### Navigation Helpers
+
+```typescript
+import {
+    headers,
+    cookies,
+    draftMode,
+    redirect,
+    notFound,
+    foxenInterruptHandler,
+} from "foxn";
+
+export async function GET() {
+    const hdrs = await headers();
+    const jar = await cookies();
+    if (!jar.get("session")) {
+        redirect("/login");
+    }
+    return Response.json({ forwardFor: hdrs.get("x-forwarded-for") });
+}
+
+// Add interrupt middleware if you are building your own Elysia app
+const app = new Elysia().use(foxenInterruptHandler());
+```
+
+Need the plugin without the rest of `foxn`? Import `foxenInterruptHandler` directly from
+`@foxen/middleware`.
+
 ### Configuration
 
 ```typescript

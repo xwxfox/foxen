@@ -20,7 +20,7 @@ Making Elysia accessible for soydevs & triangle enthusiasts.
 - TypeScript support with Eden Treaty integration
 - Runtime mode for dev, compiled mode for production
 - OpenAPI/Swagger generation from TypeBox schemas
-- Supports `next.config.ts` and `middleware.ts`
+- Supports* `next.config.ts` and `middleware.ts`
 
 ---
 
@@ -37,7 +37,7 @@ Making Elysia accessible for soydevs & triangle enthusiasts.
 | [`@foxen/config`](./packages/config) | Configuration + next.config.ts support |
 | [`@foxen/middleware`](./packages/middleware) | middleware.ts support |
 | [`@foxen/env`](./packages/env) | .env loader with type-safety & added sugar |
-
+| [`@foxen/navigation`](./packages/env) | next/navigation sugar, like rewrites, interupts, headersm cookies |
 ---
 
 ## Quick Start

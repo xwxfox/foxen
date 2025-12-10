@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { NextResponse } from '@foxen/core';
+import { forbidden, notFound, redirect, unauthorized } from '@foxen/navigation';
 import { createMiddlewareAdapter, defaultAdapter, simpleAdapter } from '../src/adapter.js';
 import type { ElysiaContext, RouteInfo } from '../src/types.js';
 
@@ -256,6 +257,79 @@ describe('simpleAdapter', () => {
 		const response = (await elysiaHandler(ctx)) as Response;
 
 		expect(response.status).toBe(204);
+	});
+});
+
+describe('navigation interrupt handling', () => {
+	test('redirect helper short-circuits with Location header', async () => {
+		const handler = async () => {
+			redirect('/login');
+		};
+
+		const routeInfo = createMockRouteInfo();
+		const elysiaHandler = defaultAdapter(
+			handler as Parameters<typeof defaultAdapter>[0],
+			routeInfo,
+			'GET',
+		);
+		const response = (await elysiaHandler(createMockContext())) as Response;
+
+		expect(response.status).toBe(307);
+		expect(response.headers.get('Location')).toBe('/login');
+	});
+
+	test('notFound helper returns JSON 404 response', async () => {
+		const handler = async () => {
+			notFound();
+		};
+
+		const routeInfo = createMockRouteInfo();
+		const elysiaHandler = defaultAdapter(
+			handler as Parameters<typeof defaultAdapter>[0],
+			routeInfo,
+			'GET',
+		);
+		const response = (await elysiaHandler(createMockContext())) as Response;
+		const body = await response.json();
+
+		expect(response.status).toBe(404);
+		expect(body.error).toBe('Not Found');
+	});
+
+	test('unauthorized helper maps to 401 JSON response', async () => {
+		const handler = async () => {
+			unauthorized();
+		};
+
+		const routeInfo = createMockRouteInfo();
+		const elysiaHandler = defaultAdapter(
+			handler as Parameters<typeof defaultAdapter>[0],
+			routeInfo,
+			'GET',
+		);
+		const response = (await elysiaHandler(createMockContext())) as Response;
+		const body = await response.json();
+
+		expect(response.status).toBe(401);
+		expect(body.error).toBe('Unauthorized');
+	});
+
+	test('forbidden helper maps to 403 JSON response', async () => {
+		const handler = async () => {
+			forbidden();
+		};
+
+		const routeInfo = createMockRouteInfo();
+		const elysiaHandler = defaultAdapter(
+			handler as Parameters<typeof defaultAdapter>[0],
+			routeInfo,
+			'GET',
+		);
+		const response = (await elysiaHandler(createMockContext())) as Response;
+		const body = await response.json();
+
+		expect(response.status).toBe(403);
+		expect(body.error).toBe('Forbidden');
 	});
 });
 

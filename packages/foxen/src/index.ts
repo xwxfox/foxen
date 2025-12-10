@@ -171,5 +171,39 @@ export {
 	type EnvErrorCode,
 } from '@foxen/env';
 
+// Navigation helpers - request context bridge + Next navigation parity
+export {
+	headers,
+	cookies,
+	draftMode,
+	redirect,
+	permanentRedirect,
+	temporaryRedirect,
+	notFound,
+	unauthorized,
+	forbidden,
+	createFoxenRequestContext,
+	withFoxenRequestContext,
+	getFoxenRequestContext,
+	applyFoxenResponseContext,
+	createInterruptResponse,
+	RedirectInterrupt,
+	NotFoundInterrupt,
+	UnauthorizedInterrupt,
+	ForbiddenInterrupt,
+	FoxenInterruptError,
+	isInterruptError,
+} from '@foxen/navigation';
+export type {
+	FoxenRequestContext,
+	FoxenRequestContextInit,
+	FoxenCookieStore,
+	ReadonlyHeaders,
+	FoxenDraftModeState,
+	FoxenInterruptResponseOptions,
+} from '@foxen/navigation';
+
+export { foxenInterruptHandler } from '@foxen/middleware';
+
 // Re-export Elysia's t for convenience
 export { t } from 'elysia';
