@@ -1,18 +1,15 @@
 #!/usr/bin/env bun
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { Glob } from "bun";
 
-const packagesDir = join(import.meta.dir, "../packages");
-const packages = readdirSync(packagesDir, { withFileTypes: true })
-	.filter(dirent => dirent.isDirectory())
-	.map(dirent => join(dirent.name, "package.json"));
+const packagesDir = `${import.meta.dir}/../packages`;
+const glob = new Glob("*/package.json");
 
 // First, collect all package versions
 const packageVersions = new Map<string, string>();
 
-for (const pkgPath of packages) {
-	const fullPath = join(packagesDir, pkgPath);
-	const pkg = JSON.parse(readFileSync(fullPath, "utf-8"));
+for await (const pkgPath of glob.scan(packagesDir)) {
+	const fullPath = `${packagesDir}/${pkgPath}`;
+	const pkg = await Bun.file(fullPath).json();
 	packageVersions.set(pkg.name, pkg.version);
 }
 
@@ -21,9 +18,9 @@ console.log("Found packages:", Array.from(packageVersions.keys()).join(", "));
 // Now, update all workspace:* dependencies
 let updatedCount = 0;
 
-for (const pkgPath of packages) {
-	const fullPath = join(packagesDir, pkgPath);
-	const pkg = JSON.parse(readFileSync(fullPath, "utf-8"));
+for await (const pkgPath of glob.scan(packagesDir)) {
+	const fullPath = `${packagesDir}/${pkgPath}`;
+	const pkg = await Bun.file(fullPath).json();
 	let modified = false;
 
 	// Check dependencies, devDependencies, and peerDependencies
@@ -54,7 +51,7 @@ for (const pkgPath of packages) {
 	}
 
 	if (modified) {
-		writeFileSync(fullPath, `${JSON.stringify(pkg, null, "\t")}\n`);
+		await Bun.write(fullPath, `${JSON.stringify(pkg, null, "\t")}\n`);
 	}
 }
 

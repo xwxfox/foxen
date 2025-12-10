@@ -1,5 +1,16 @@
 # @foxen/env
 
+## 1.3.0
+
+### Minor Changes
+
+- still fiddling with changesets
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/core@1.3.0
+
 ## 1.1.0
 
 ### Minor Changes

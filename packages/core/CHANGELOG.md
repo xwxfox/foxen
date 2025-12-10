@@ -1,5 +1,11 @@
 # @foxen/core
 
+## 1.3.0
+
+### Minor Changes
+
+- still fiddling with changesets
+
 ## 1.1.0
 
 ### Minor Changes

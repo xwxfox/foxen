@@ -4,9 +4,7 @@
  * If a local version is <= npm version, it automatically bumps the patch version
  */
 
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { Glob, $ } from "bun";
 
 interface PackageJson {
 	name: string;
@@ -14,17 +12,14 @@ interface PackageJson {
 	private?: boolean;
 }
 
-function getNpmVersion(packageName: string): string | null {
-	try {
-		const result = execSync(`npm view ${packageName} version 2>/dev/null`, {
-			encoding: "utf-8",
-			stdio: ["pipe", "pipe", "pipe"],
-		});
-		return result.trim();
-	} catch {
-		// Package doesn't exist on npm yet
-		return null;
-	}
+async function getNpmVersion(packageName: string): Promise<string | null> {
+    try {
+        const result = await $`bun info ${packageName} --json version`.json();
+        return result.trim();
+    } catch {
+        // Package doesn't exist on npm yet
+        return null;
+    }
 }
 
 function compareVersions(v1: string, v2: string): number {
@@ -44,19 +39,17 @@ function bumpPatchVersion(version: string): string {
 	return parts.join(".");
 }
 
-const packagesDir = join(import.meta.dir, "../packages");
-const packageDirs = readdirSync(packagesDir, { withFileTypes: true })
-	.filter((dirent) => dirent.isDirectory())
-	.map((dirent) => dirent.name);
+const packagesDir = `${import.meta.dir}/../packages`;
+const glob = new Glob("*/package.json");
 
 console.log("Verifying package versions against npm...\n");
 
 let bumpedCount = 0;
 const packagesToPublish: string[] = [];
 
-for (const dir of packageDirs) {
-	const pkgPath = join(packagesDir, dir, "package.json");
-	const pkg: PackageJson = JSON.parse(readFileSync(pkgPath, "utf-8"));
+for await (const pkgPath of glob.scan(packagesDir)) {
+	const fullPath = `${packagesDir}/${pkgPath}`;
+	const pkg: PackageJson = await Bun.file(fullPath).json();
 
 	// Skip private packages
 	if (pkg.private) {
@@ -66,7 +59,7 @@ for (const dir of packageDirs) {
 
 	packagesToPublish.push(pkg.name);
 	const localVersion = pkg.version;
-	const npmVersion = getNpmVersion(pkg.name);
+	const npmVersion = await getNpmVersion(pkg.name);
 
 	if (npmVersion === null) {
 		console.log(`${pkg.name}@${localVersion} - New package (not on npm yet)`);
@@ -79,7 +72,7 @@ for (const dir of packageDirs) {
 		// Local version is same or older than npm version - bump it
 		const newVersion = bumpPatchVersion(npmVersion);
 		pkg.version = newVersion;
-		writeFileSync(pkgPath, `${JSON.stringify(pkg, null, "\t")}\n`);
+		await Bun.write(fullPath, `${JSON.stringify(pkg, null, "\t")}\n`);
 		console.log(
 			`[!] ${pkg.name}: local ${localVersion} <= npm ${npmVersion} → bumped to ${newVersion}`,
 		);
@@ -95,9 +88,9 @@ if (bumpedCount > 0) {
 	console.log(`Bumped ${bumpedCount} package version(s)`);
 	console.log("[!] Package versions were updated. Please run 'bun changeset version' to update dependencies.");
 
-    // commit changes to git
-    execSync("git add packages/*/package.json", { stdio: "inherit" });
-    execSync(`git commit -m "chore: bump package versions"`, { stdio: "inherit" });
+	// commit changes to git
+	await $`git add packages/*/package.json`;
+	await $`git commit -m "chore: bump package versions"`;
 } else {
 	console.log("All package versions are valid");
 }
