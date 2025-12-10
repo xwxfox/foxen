@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/compiler",
-	"version": "1.2.1",
+	"version": "1.3.1",
 	"description": "Code generation for Foxen - generates optimized Elysia routes from Next.js App Router structure",
 	"type": "module",
 	"main": "./dist/index.js",
