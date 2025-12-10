@@ -3,9 +3,10 @@
 	"changelog": "@changesets/cli/changelog",
 	"commit": false,
 	"fixed": [],
-	"linked": [["foxen", "@foxen/*"]],
+	"linked": [],
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
+	"bumpVersionsWithWorkspaceProtocolOnly": false,
 	"ignore": ["foxen-example*", "basic-example"]
 }

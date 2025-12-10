@@ -1,5 +1,29 @@
 # @foxen/middleware
 
+## 1.1.0
+
+### Minor Changes
+
+- too dumb for changeset
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/config@1.1.0
+  - @foxen/core@1.1.0
+
+## 1.1.0
+
+### Minor Changes
+
+- changeset fiddling
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/config@1.1.0
+  - @foxen/core@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

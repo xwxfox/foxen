@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/middleware",
-	"version": "1.0.0",
+	"version": "1.2.1",
 	"description": "Middleware support for Foxen - middleware.ts and proxy.ts handling",
 	"type": "module",
 	"main": "./dist/index.js",

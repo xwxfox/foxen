@@ -1,6 +1,6 @@
 {
-	"name": "foxen",
-	"version": "1.0.0",
+	"name": "foxn",
+	"version": "1.3.0",
 	"description": "Foxen - Next.js API Routes → Elysia Migration Framework",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -10,7 +10,7 @@
 		"access": "public"
 	},
 	"bin": {
-		"foxen": "./dist/bin.js"
+		"foxn": "./dist/bin.js"
 	},
 	"exports": {
 		".": {

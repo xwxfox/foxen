@@ -9,7 +9,7 @@ Command-line tools for Foxen projects. Provides commands for initializing, devel
 bun add -g @foxen/cli
 
 # Or use with bunx
-bunx foxen <command>
+bunx foxn <command>
 ```
 
 ## Commands
@@ -178,7 +178,7 @@ bun init
 bun add @foxen/cli @foxen/adapter @foxen/core elysia
 
 # Create config
-bunx foxen init
+bunx foxn init
 
 # Create a route
 mkdir -p src/app/api/hello
@@ -191,25 +191,25 @@ export async function GET(request: NextRequest) {
 EOF
 
 # Generate and run
-bunx foxen generate
-bunx foxen dev
+bunx foxn generate
+bunx foxn dev
 ```
 
 ### Development Workflow
 
 ```bash
 # Start dev server with hot reload
-bunx foxen dev
+bunx foxn dev
 
 # Or use generate with watch mode
-bunx foxen generate --watch
+bunx foxn generate --watch
 ```
 
 ### Production Build
 
 ```bash
 # Generate optimized routes
-bunx foxen generate
+bunx foxn generate
 
 # Build your app
 bun build ./src/index.ts --outdir ./dist
@@ -218,3 +218,4 @@ bun build ./src/index.ts --outdir ./dist
 ## License
 
 MIT
+

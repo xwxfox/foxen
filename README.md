@@ -44,7 +44,7 @@ Making Elysia accessible for soydevs & triangle enthusiasts.
 
 ```bash
 # Install the meta package (includes everything)
-bun add foxen elysia
+bun add foxn elysia
 
 # Or install individual packages
 bun add @foxen/cli @foxen/adapter @foxen/core elysia
@@ -53,7 +53,7 @@ bun add @foxen/cli @foxen/adapter @foxen/core elysia
 ### 1. Initialize
 
 ```bash
-bunx foxen init
+bunx foxn init
 ```
 
 ### 2. Create a Route
@@ -70,13 +70,13 @@ export async function GET(request: NextRequest) {
 ### 3. Start Development
 
 ```bash
-bunx foxen dev
+bunx foxn dev
 ```
 
 ### 4. Generate for Production
 
 ```bash
-bunx foxen generate
+bunx foxn generate
 ```
 
 ---
@@ -318,7 +318,7 @@ See the [examples](./examples) directory:
 ### Step 1: Install Foxen
 
 ```bash
-bun add foxen elysia
+bun add foxn elysia
 ```
 
 ### Step 2: Update Imports

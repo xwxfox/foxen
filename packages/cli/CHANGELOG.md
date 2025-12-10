@@ -1,5 +1,33 @@
 # @foxen/cli
 
+## 1.1.0
+
+### Minor Changes
+
+- too dumb for changeset
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/compiler@1.1.0
+  - @foxen/adapter@1.1.0
+  - @foxen/core@1.1.0
+  - @foxen/env@1.1.0
+
+## 1.1.0
+
+### Minor Changes
+
+- changeset fiddling
+
+### Patch Changes
+
+- Updated dependencies
+  - @foxen/adapter@1.1.0
+  - @foxen/compiler@1.1.0
+  - @foxen/core@1.1.0
+  - @foxen/env@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

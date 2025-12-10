@@ -5,7 +5,7 @@ Meta package that re-exports everything from all Foxen packages, providing a sin
 ## Installation
 
 ```bash
-bun add foxen
+bun add foxn
 ```
 
 This installs all Foxen packages:
@@ -20,7 +20,7 @@ This installs all Foxen packages:
 
 ```typescript
 import { Elysia } from "elysia";
-import { NextRequest, NextResponse, appRouter, defineConfig } from "foxen";
+import { NextRequest, NextResponse, appRouter, defineConfig } from "foxn";
 
 // Create server with routes
 const app = new Elysia()
@@ -46,7 +46,7 @@ import {
     // Types
     type HttpMethod,
     type NextRouteHandler,
-} from "foxen";
+} from "foxn";
 ```
 
 ### Helpers
@@ -55,7 +55,7 @@ import {
 import {
     userAgent,
     type UserAgent,
-} from "foxen";
+} from "foxn";
 ```
 
 ### Configuration
@@ -77,7 +77,7 @@ import {
     processRedirects,
     processRewrites,
     processHeaders,
-} from "foxen";
+} from "foxn";
 ```
 
 ### Adapter
@@ -89,7 +89,7 @@ import {
     scanDirectory,
     convertPathToElysia,
     type AppRouterConfig,
-} from "foxen";
+} from "foxn";
 ```
 
 ### Middleware
@@ -100,13 +100,13 @@ import {
     executeMiddleware,
     shouldRunMiddleware,
     NextFetchEvent,
-} from "foxen";
+} from "foxn";
 ```
 
 ### CLI Configuration
 
 ```typescript
-import { defineConfig, type Config } from "foxen";
+import { defineConfig, type Config } from "foxn";
 
 // foxen.config.ts
 export default defineConfig({
@@ -119,7 +119,7 @@ export default defineConfig({
 ### TypeBox (from Elysia)
 
 ```typescript
-import { t } from "foxen";
+import { t } from "foxn";
 
 // Use for schemas
 const UserSchema = t.Object({
@@ -134,7 +134,7 @@ const UserSchema = t.Object({
 ```typescript
 // server.ts
 import { Elysia } from "elysia";
-import { appRouter, NextRequest, NextResponse } from "foxen";
+import { appRouter, NextRequest, NextResponse } from "foxn";
 
 const app = new Elysia()
     .get("/health", () => ({ status: "ok" }))
@@ -156,7 +156,7 @@ const app = new Elysia()
 
 ```typescript
 // src/app/api/users/route.ts
-import { NextRequest, NextResponse } from "foxen";
+import { NextRequest, NextResponse } from "foxn";
 
 export async function GET(request: NextRequest) {
     const users = await getUsers();
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
 
 ```typescript
 // middleware.ts
-import { NextRequest, NextResponse } from "foxen";
+import { NextRequest, NextResponse } from "foxn";
 
 export function middleware(request: NextRequest) {
     const token = request.cookies.get("token");
@@ -193,16 +193,16 @@ export const config = {
 
 ```bash
 # Initialize configuration
-bunx foxen init
+bunx foxn init
 
 # Generate routes
-bunx foxen generate
+bunx foxn generate
 
 # Start dev server
-bunx foxen dev
+bunx foxn dev
 
 # Migrate Next.js project
-bunx foxen migrate ./my-app
+bunx foxn migrate ./my-app
 ```
 
 ## When to Use

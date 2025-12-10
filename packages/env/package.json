@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/env",
-	"version": "1.0.0",
+	"version": "1.2.1",
 	"description": "Environment variable management for Foxen - loading, validation, type-safe schemas, and runtime access",
 	"type": "module",
 	"main": "./dist/index.js",

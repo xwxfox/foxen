@@ -16,8 +16,7 @@
 		"noEmitOnError": true,
 		"verbatimModuleSyntax": true,
 		"allowImportingTsExtensions": true,
-		"noEmit": true,
-		"types": ["bun-types"]
+		"noEmit": true
 	},
 	"exclude": ["node_modules", "dist", "coverage", "tests"]
 }
