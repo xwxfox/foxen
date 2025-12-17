@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/navigation",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Next.js navigation helpers for Foxen (headers, cookies, redirects, draft mode)",
 	"type": "module",
 	"main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
 	"name": "foxn",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"description": "Foxen - Next.js API Routes → Elysia Migration Framework",
 	"type": "module",
 	"main": "./dist/index.js",

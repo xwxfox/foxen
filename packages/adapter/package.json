@@ -1,6 +1,6 @@
 {
 	"name": "@foxen/adapter",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Elysia integration for Foxen - route scanning, handler adaptation, middleware",
 	"type": "module",
 	"main": "./dist/index.js",
