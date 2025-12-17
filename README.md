@@ -38,6 +38,7 @@ Making Elysia accessible for soydevs & triangle enthusiasts.
 | [`@foxen/middleware`](./packages/middleware) | middleware.ts support |
 | [`@foxen/env`](./packages/env) | .env loader with type-safety & added sugar |
 | [`@foxen/navigation`](./packages/env) | next/navigation sugar, like rewrites, interupts, headersm cookies |
+| [`@foxen/auth`](./packages/auth) | Opt-in auth helpers built on better-auth |
 ---
 
 ## Quick Start
@@ -71,6 +72,33 @@ export async function GET(request: NextRequest) {
 
 ```bash
 bunx foxn dev
+```
+
+### Auth (opt-in)
+
+Requires installing `@foxen/auth` alongside `better-auth`:
+
+```bash
+bun add @foxen/auth better-auth
+```
+
+Sample usage for protecting routes:
+
+```typescript
+// src/app/api/secure/route.ts
+import { NextRequest, NextResponse } from '@foxen/core';
+import { requireAuth, CommonChecks, createBetterAuthSessionGetter } from '@foxen/auth';
+import { auth } from './better-auth-instance';
+
+const getSession = createBetterAuthSessionGetter(auth);
+
+export async function GET(request: NextRequest) {
+  const { session } = await requireAuth(request, getSession)
+    .addCheck(CommonChecks.hasRole('admin'))
+    .execute();
+
+  return NextResponse.json({ userId: session.userId, ok: true });
+}
 ```
 
 ### 4. Generate for Production

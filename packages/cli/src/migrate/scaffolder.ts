@@ -21,7 +21,7 @@ function resolveFoxenVersion(): string {
 			return `^${pkg.version}`;
 		}
 	} catch {
-		// Ignore – fallback covers cases where foxn isn't locally resolvable
+		// Ignore - fallback covers cases where foxn isn't locally resolvable
 	}
 
 	return FALLBACK_FOXEN_VERSION;

@@ -1,0 +1,78 @@
+{
+  "name": "@foxen/auth",
+  "version": "0.1.0",
+  "description": "Authentication utilities for Foxen with better-auth integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./handler": {
+      "import": "./dist/handler.js",
+      "types": "./dist/handler.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors.js",
+      "types": "./dist/errors.d.ts"
+    },
+    "./checks": {
+      "import": "./dist/checks.js",
+      "types": "./dist/checks.d.ts"
+    },
+    "./integration": {
+      "import": "./dist/integration.js",
+      "types": "./dist/integration.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xwxfox/foxen",
+    "directory": "packages/auth"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts ./src/handler.ts ./src/errors.ts ./src/checks.ts ./src/integration.ts --outdir ./dist --target bun && bun run build:types",
+    "build:types": "tsc --project tsconfig.build.json",
+    "dev": "bun run build --watch",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@foxen/core": "workspace:*",
+    "@sinclair/typebox": "^0.34.0"
+  },
+  "peerDependencies": {
+    "better-auth": ">=1.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "better-auth": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "better-auth": "^1.4.7",
+    "typescript": "^5.7.0"
+  },
+  "keywords": [
+    "foxen",
+    "auth",
+    "authentication",
+    "authorization",
+    "better-auth",
+    "middleware"
+  ],
+  "license": "MIT"
+}
